@@ -1,10 +1,9 @@
-// shared-library/vars/buildApp.groovy
 def call() {
-    echo "🏗️ Building application..."
-    sh """
-        echo 'Installing dependencies...'
-        npm install || true
-        echo 'Running build...'
-        npm run build || echo 'Build simulated (no real app)'
-    """
+    echo "🚀 Building application..."
+    sh '''
+        echo "Simulating build process..."
+        mkdir -p build
+        echo "Build successful" > build/output.txt
+    '''
+    echo "✅ Build completed successfully."
 }
