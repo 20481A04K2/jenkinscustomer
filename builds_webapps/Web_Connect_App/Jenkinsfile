@@ -1,0 +1,33 @@
+@Library('shared-library') _
+
+pipeline {
+    agent any
+
+    parameters {
+        string(name: 'ENVIRONMENT', defaultValue: 'dev', description: 'Target environment')
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                script {
+                    buildApp('Web_Connect_App')
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                script {
+                    deployApp('Web_Connect_App', params.ENVIRONMENT)
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "✅ Web_Connect_App build & deploy done"
+        }
+    }
+}
