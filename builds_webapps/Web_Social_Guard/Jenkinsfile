@@ -1,0 +1,33 @@
+@Library('shared-library') _
+
+pipeline {
+    agent any
+
+    parameters {
+        string(name: 'ENVIRONMENT', defaultValue: 'dev', description: 'Target environment')
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                script {
+                    buildApp('Web_Social_Guard')
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                script {
+                    deployApp('Web_Social_Guard', params.ENVIRONMENT)
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "✅ Web_Social_Guard build & deploy done"
+        }
+    }
+}
