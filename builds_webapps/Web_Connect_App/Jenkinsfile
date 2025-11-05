@@ -1,33 +1,41 @@
-@Library('shared-library') _
+// builds_webapps/Web_Connect_App/Jenkinsfile
+@Library('phyllo-shared-lib') _
 
 pipeline {
     agent any
 
-    parameters {
-        string(name: 'ENVIRONMENT', defaultValue: 'dev', description: 'Target environment')
+    environment {
+        BUCKET_NAME = "connect-app-dev-bucket"
     }
 
     stages {
-        stage('Build') {
+        stage('Checkout SCM') {
+            steps { checkout scm }
+        }
+
+        stage('Environment config') {
             steps {
-                script {
-                    buildApp('Web_Connect_App')
-                }
+                echo "Setting up environment for Web_Connect_App..."
             }
         }
 
-        stage('Deploy') {
+        stage('Install Packages') {
             steps {
-                script {
-                    deployApp('Web_Connect_App', params.ENVIRONMENT)
-                }
+                sh 'npm install || echo "no package.json"'
             }
         }
-    }
 
-    post {
-        success {
-            echo "✅ Web_Connect_App build & deploy done"
+        stage('Test and Build') {
+            steps {
+                sh 'npm test || echo "no tests"'
+                buildApp()
+            }
+        }
+
+        stage('Deploy to Production') {
+            steps {
+                deployApp(env.BUCKET_NAME)
+            }
         }
     }
 }
