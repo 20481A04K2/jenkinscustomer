@@ -1,10 +1,10 @@
-def call(String appName) {
-    echo "🏗️  Building application: ${appName}"
+// shared-library/vars/buildApp.groovy
+def call() {
+    echo "🏗️ Building application..."
     sh """
-        echo "Installing dependencies for ${appName}"
-        sleep 2
-        echo "Running build for ${appName}"
-        sleep 2
-        echo "✅ Build completed for ${appName}"
+        echo 'Installing dependencies...'
+        npm install || true
+        echo 'Running build...'
+        npm run build || echo 'Build simulated (no real app)'
     """
 }
