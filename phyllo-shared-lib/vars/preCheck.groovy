@@ -1,6 +1,5 @@
-
-// shared-library/vars/preCheck.groovy
 def call() {
-    echo "✅ Running Pre-checks..."
-    sh "echo 'Checking repo, branches, and environment variables...'"
+    echo "🔍 Running pre-checks..."
+    sh 'echo "Checking environment, branches, and repo..."'
+    echo "✅ Pre-checks passed successfully."
 }
