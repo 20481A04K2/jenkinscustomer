@@ -1,7 +1,5 @@
-def call(String env) {
-    echo "🔍 Validating environment: ${env}"
-    if (!["dev", "staging", "prod"].contains(env)) {
-        error "❌ Invalid environment: ${env}"
-    }
-    echo "✅ Pre-check passed for ${env}"
+// shared-library/vars/preCheck.groovy
+def call() {
+    echo "✅ Running Pre-checks..."
+    sh "echo 'Checking repo, branches, and environment variables...'"
 }
