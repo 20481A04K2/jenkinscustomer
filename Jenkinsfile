@@ -1,52 +1,31 @@
-@Library('shared-library') _
+// phyllo-cicd/Jenkinsfile
+@Library('phyllo-shared-lib') _   // reference shared library configured in Jenkins
 
 pipeline {
     agent any
 
-    parameters {
-        choice(name: 'ENVIRONMENT', choices: ['dev', 'staging', 'prod'], description: 'Select target environment')
-        multiSelect(name: 'WEB_APPS', choices: [
-            'Web_Connect_App',
-            'Web_Social_Guard'
-        ], description: 'Select which apps to build & deploy')
-    }
-
     stages {
-        stage('PRE_CHECK') {
+        stage('Pre Checks') {
             steps {
                 script {
-                    preCheck(params.ENVIRONMENT)
+                    preCheck()
                 }
             }
         }
 
-        stage('BUILD_AND_DEPLOY') {
-            steps {
-                script {
-                    def apps = params.WEB_APPS.tokenize(',')
-                    def parallelJobs = [:]
-
-                    for (app in apps) {
-                        parallelJobs[app] = {
-                            echo "🧱 Triggering job for ${app}"
-                            build job: "builds_webapps/${app}", parameters: [
-                                string(name: 'ENVIRONMENT', value: params.ENVIRONMENT)
-                            ]
-                        }
+        stage('Build All Webapps') {
+            parallel {
+                stage('Build Social Guard') {
+                    steps {
+                        build job: 'builds_webapps/Web_Social_Guard'
                     }
-
-                    parallel parallelJobs
+                }
+                stage('Build Connect App') {
+                    steps {
+                        build job: 'builds_webapps/Web_Connect_App'
+                    }
                 }
             }
-        }
-    }
-
-    post {
-        success {
-            echo "✅ All applications built and deployed successfully!"
-        }
-        failure {
-            echo "❌ One or more builds failed. Check logs for details."
         }
     }
 }
